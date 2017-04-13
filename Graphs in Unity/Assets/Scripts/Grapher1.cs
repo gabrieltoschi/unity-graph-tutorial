@@ -4,7 +4,22 @@ using UnityEngine;
 
 public class Grapher1 : MonoBehaviour {
 
-	[Range(10, 100)]
+	public enum FunctionOption {
+		Linear,
+		Exponential,
+		Parabola
+	};
+
+	private delegate float FunctionDelegate(float x);
+	private static FunctionDelegate[] functionDelegates = {
+		Linear,
+		Exponential,
+		Parabola
+	};
+
+	public FunctionOption function;
+
+	[Range(10, 150)]
 	public int resolution = 10;
 
 	private int currentResolution;
@@ -31,7 +46,7 @@ public class Grapher1 : MonoBehaviour {
 			float x = i * increment;
 
 			points[i].position = new Vector3(x, 0f, 0f);
-			points[i].startColor = new Color(x, 2*x, x/2, 1f);
+			points[i].startColor = new Color(1f, 0f, 0f, 1f);
 			points[i].startSize = 0.1f;
 		}
 	}
@@ -42,10 +57,13 @@ public class Grapher1 : MonoBehaviour {
 			createPoints();
 		}
 
+		// get mathematical function
+		FunctionDelegate mathFunc = functionDelegates[(int)function];
+
 		// set points position in Y axis
 		for (int i = 0; i < resolution; i++){
 			Vector3 p = points[i].position;
-			p.y = Parabola(p.x);
+			p.y = mathFunc(p.x);
 			points[i].position = p;
 		}
 
